@@ -1,21 +1,33 @@
 import React from 'react'
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import logo from './logo.svg'
 import './App.css'
 import Navbar from './components/Navbar'
 import Services from './components/Services'
+import ChooseServiceSlot from './components/ChooseServiceSlot'
+
 function App() {
   return (
-    <div className="App">
-      <Navbar />
-      {/* <div>
+    <Router>
+      <div className="App">
+        <Navbar />
+        {/* <div>
         Edit <code>src/App.js</code> and save to reload.
       </div> */}
-      <div className="container">
-        <div className="row">
-          <Services />
+        <div className="container">
+          <div className="row">
+            <Switch>
+              <Route path="/bookservice/:id/:name/">
+                <ChooseServiceSlot />
+              </Route>
+              <Route path="/">
+                <Services />
+              </Route>
+            </Switch>
+          </div>
         </div>
       </div>
-    </div>
+    </Router>
   )
 }
 

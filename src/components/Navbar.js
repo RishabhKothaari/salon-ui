@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 function Navbar() {
   /*
@@ -10,11 +10,11 @@ function Navbar() {
     */
   return (
     <nav className="navbar navbar-dark bg-dark">
-      <a className="navbar-brand" href="#">
+      <a className="navbar-brand" href="/">
         AR Salon & Spa
       </a>
     </nav>
-  );
+  )
 }
 
-export default Navbar;
+export default Navbar

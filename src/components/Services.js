@@ -1,27 +1,47 @@
-import React, {useState} from 'react'
-import {useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
+import {useHistory} from 'react-router-dom'
+import {servicesApi} from '../services/apiservice'
+import Card from './Card'
 
 function Services() {
   const [error, setError] = useState(null)
   const [servicesIsLoaded, servicesLoaded] = useState(false)
   const [services, servicesList] = useState([])
-  const fetchServices = async () => {
-    try {
-      const result = await (
-        await fetch('http://localhost:8080/api/services/services', {
-          mode: 'cors',
-        })
-      ).json()
-      servicesList(result)
-      servicesLoaded(true)
-    } catch (error) {
-      console.log('error while fetching services ', error)
-      setError(error)
+  let history = useHistory()
+
+  const chooseService = service => {
+    //Route to book choosen service
+    history.push(`/bookservice/${service.id}/${service.name}`)
+  }
+  const getCardDetails = service => {
+    return {
+      id: service.id,
+      name: service.name,
+      h3: `$${service.price}`,
+      description: service.description,
+      footer: `${service.timeInMinutes} minutes`,
+      service: service,
     }
   }
+
   useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const {url, mode} = servicesApi()
+        const result = await (
+          await fetch(url, {
+            mode: mode,
+          })
+        ).json()
+        servicesList(result)
+        servicesLoaded(true)
+      } catch (error) {
+        setError(error.message)
+      }
+    }
     fetchServices()
   }, [])
+
   if (error) {
     return <div className="error">{error}</div>
   } else if (!servicesIsLoaded) {
@@ -30,20 +50,11 @@ function Services() {
     return (
       <>
         {services.map(service => (
-          <div
-            className="card text-center"
-            style={{width: '21rem', margin: '1rem'}}
-          key={service.id}>
-            {/* <img className="card-img-top" src="..." alt="Card image cap" />
-             */}
-            <div className="card-header">{service.name}</div>
-            <h3 style={{margin:'inherit'}}>${service.price}</h3>
-            <div className="card-body">
-              <p className="card-text">{service.description}</p>
-              <button className="btn btn-outline-primary"> Book Now </button>
-            </div>
-            <p>{service.timeInMinutes} minutes</p>
-          </div>
+          <Card
+            key={service.id}
+            details={getCardDetails(service)}
+            action={chooseService}
+          />
         ))}
       </>
     )
